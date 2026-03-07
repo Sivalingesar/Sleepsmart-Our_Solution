@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sleepsmart | Reclaim Your Rest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        display: grid;
+        place-content: center;
+        min-height: 100vh;
+        background: #0f172a; 
+        font-family: 'Open Sans', sans-serif;
+        overflow-x: hidden;
+        padding: 40px;
+    }
+
+    /* GRID SETUP: 2 Columns */
+    ul {
+        position: relative;
+        transform-style: preserve-3d;
+        perspective: 2000px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        
+        /* Define a large horizontal gap here */
+        column-gap: 80px; 
+        row-gap: 70; 
+        
+        transition: 800ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    ul:hover {
+        /* Only increase vertical gap on hover */
+        row-gap: 040px; 
+    }
+
+    ul li {
+        position: relative;
+        list-style: none;
+        width: 500px; 
+        min-height: 100px;
+        padding: 20px 25px;
+        background: rgba(30, 41, 59, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid #334155;
+        border-radius: 12px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, .4);
+        transition: 800ms cubic-bezier(0.23, 1, 0.32, 1);
+        transition-delay: calc(var(--i) * 20ms);
+        cursor: pointer;
+        
+        /* BLURRED STATE BEFORE HOVER */
+        filter: blur(8px); 
+        opacity: 0.3;
+        transform: translateZ(calc(var(--i) * -40px + 100px)) translateY(calc(var(--i) * 12px - 80px));
+    }
+
+    ul li::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 6px;
+        background: var(--accent);
+        box-shadow: 0 0 15px var(--accent);
+    }
+
+    /* Grouped Colors */
+    ul li:nth-child(-n+4) { --accent: #02A2F8; }
+    ul li:nth-child(n+5):nth-child(-n+8) { --accent: #f28885; }
+    ul li:nth-child(n+9) { --accent: #65bb76; }
+
+    /* CLEAR STATE ON HOVER */
+    ul:hover li {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateZ(0) translateY(0);
+        border-color: var(--accent);
+    }
+
+    .icon-box {
+        min-width: 45px;
+        height: 45px;
+        background: #0f172a;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: 'Lilita One', cursive;
+        font-size: 18px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .content h3 {
+        font-family: 'Lilita One', cursive;
+        color: var(--accent);
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.95rem;
+    }
+
+    .content p {
+        color: #f1f5f9;
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    /* Lift individual card even more on hover */
+    ul li:hover {
+        background: #1e293b;
+        transform: scale(1.00) translateZ(150px) !important;
+        z-index: 100;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, .6);
+    }
+
+    @media (max-width: 950px) { /* Increased breakpoint due to wider gap */
+        ul { grid-template-columns: 1fr; column-gap: 0; }
+        ul li { width: 90vw; }
+    }
+  </style>
+</head>
+<body>
+
+  <ul>
+    <li style="--i: 1;">
+      <div class="icon-box">01</div>
+      <div class="content">
+        <h3>The Awareness Gap</h3>
+        <p>Students are aware of <strong>sleep deprivation</strong> but cannot reclaim rest.</p>
+      </div>
+    </li>
+    <li style="--i: 2;">
+      <div class="icon-box">02</div>
+      <div class="content">
+        <h3>Root Cause</h3>
+        <p>The primary driver is the increase of <strong>screen time</strong> in students.</p>
+      </div>
+    </li>
+    <li style="--i: 3;">
+      <div class="icon-box">03</div>
+      <div class="content">
+        <h3>Health Priority</h3>
+        <p>Sleepsmart helps students <strong>prioritise health</strong> over distractions.</p>
+      </div>
+    </li>
+    <li style="--i: 4;">
+      <div class="icon-box">04</div>
+      <div class="content">
+        <h3>Educational Insight</h3>
+        <p>Detailed information about the impacts of <strong>sleep loss</strong>.</p>
+      </div>
+    </li>
+    <li style="--i: 5;">
+      <div class="icon-box">05</div>
+      <div class="content">
+        <h3>SleepScore Survey</h3>
+        <p>A quick and simple <strong>diagnosis</strong> of your current sleep health.</p>
+      </div>
+    </li>
+    <li style="--i: 6;">
+      <div class="icon-box">06</div>
+      <div class="content">
+        <h3>Concise Planning</h3>
+        <p>Planner allows for <strong>concise adaptability</strong> for user needs.</p>
+      </div>
+    </li>
+    <li style="--i: 7;">
+      <div class="icon-box">07</div>
+      <div class="content">
+        <h3>Practical Delivery</h3>
+        <p><strong>Short form content</strong> ensures the message is conveyed effectively.</p>
+      </div>
+    </li>
+    <li style="--i: 8;">
+      <div class="icon-box">08</div>
+      <div class="content">
+        <h3>Multi-Platform</h3>
+        <p>Expanded accessibility across <strong>more than one platform</strong>.</p>
+      </div>
+    </li>
+    <li style="--i: 10;">
+      <div class="icon-box">09</div>
+      <div class="content">
+        <h3>Pilot Release</h3>
+        <p>Tested technologies in <strong>late February 2026</strong> including gauge tools.</p>
+      </div>
+    </li>
+    <li style="--i: 10;">
+      <div class="icon-box">10</div>
+      <div class="content">
+        <h3>Proven Results</h3>
+        <p>Observations showed <strong>positively skewed</strong> effectiveness results.</p>
+      </div>
+    </li>
+    <li style="--i: 11;">
+      <div class="icon-box">11</div>
+      <div class="content">
+        <h3>Statewide Mission</h3>
+        <p>Reclaiming the <strong>8-hour requirement</strong> for students statewide.</p>
+      </div>
+    </li>
+    <li style="--i: 12;">
+      <div class="icon-box">12</div>
+      <div class="content">
+        <h3>Mobile Access</h3>
+        <p>Sleepsmart is now fully accessible on your <strong>mobile device</strong>.</p>
+      </div>
+    </li>
+  </ul>
+
+</body>
+</html>

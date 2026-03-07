@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLEEPSMART // NEURAL OPTIMIZATION</title>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a; 
+            --card-bg: rgba(15, 23, 42, 0.95);
+            --text: #f0f4f8;
+            --accent: #00ffcc; 
+            --accent-2: #818cf8; 
+            --border: rgba(129, 140, 248, 0.3);
+            --font-display: 'Syncopate', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent; /* Changed to transparent to blend with main page */
+            color: var(--text);
+            font-family: var(--font-display);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .viewport {
+            position: absolute;
+            inset: 0;
+            perspective: 1200px;
+            overflow: hidden;
+        }
+
+        .world {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .item {
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            will-change: transform, opacity;
+        }
+
+        .card {
+            width: 380px;
+            height: 450px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(20px);
+            transform: translate(-50%, -50%);
+        }
+
+        .card-id { font-family: var(--font-code); color: var(--accent); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 1rem; display: block;}
+        .card h2 { font-size: 1.6rem; margin: 0; line-height: 1.2; font-weight: 800; color: #fff; text-transform: uppercase; }
+        .card p { font-family: var(--font-code); font-size: 0.85rem; line-height: 1.7; color: rgba(240, 244, 248, 0.9); margin-top: 1.5rem; }
+        .card-footer { margin-top: auto; font-family: var(--font-code); font-size: 0.7rem; opacity: 0.5; border-top: 1px solid var(--border); padding-top: 1rem; display: flex; justify-content: space-between;}
+
+        .big-text {
+            font-size: 18vw;
+            font-weight: 800;
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(129, 140, 248, 0.4); 
+            text-transform: uppercase;
+            white-space: nowrap;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-2);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="viewport" id="viewport">
+        <div class="world" id="world"></div>
+    </div>
+
+    <script>
+        const CONFIG = { starCount: 250, zGap: 2500, camSpeed: 5.0 };
+        const DATA = [
+            { title: "The Awareness Gap", body: "Most students recognize the symptoms of sleep deprivation but struggle to implement a recovery plan. SleepSmart bridges this gap by turning passive knowledge into active, restorative habits." },
+            { title: "The Digital Root Cause", body: "Excessive screen time remains the primary driver of delayed sleep onset and poor rest quality. Our system targets this behavior to help users disconnect and recharge effectively." },
+            { title: "Educational Insight", body: "We provide deep-dive analytics into how chronic sleep loss impacts cognitive function and long-term memory. Understanding the science of rest is the first step toward reclaiming it." },
+            { title: "SleepScore Survey", body: "Our rapid diagnostic tool offers a clear snapshot of your current neurological and physical sleep health. This assessment provides the baseline for your personalized optimization path." },
+            { title: "Practical Delivery", body: "By utilising high-impact, short-form content, we ensure that vital health messages are retained and respected. Information is designed for the modern attention span without sacrificing depth." },
+            { title: "The Sleepscore System", body: "We have created a system which allows for a quick and concise way to rate your sleep health, giving you immediate feedback on your neural recovery." },
+            { title: "Statewide Mission", body: "Our ultimate goal is to restore the essential 8-hour sleep requirement for every student. We are committed to shifting academic culture toward a health-first perspective." },
+            { title: "Mobile Access", body: "SleepSmart is fully optimized for mobile devices, allowing for seamless tracking on the go. High-level neural optimization is now available right in the palm of your hand." }
+        ];
+
+        const TEXTS = ["FOCUS", "RECLAIM", "RESTORE", "EVOLVE"];
+        let parentScrollProgress = 0; 
+        const world = document.getElementById('world');
+        const items = [];
+        const max3DScroll = ((DATA.length - 1) * CONFIG.zGap) / CONFIG.camSpeed;
+
+        window.addEventListener('message', (e) => {
+            if (e.data.type === 'SET_PROGRESS') parentScrollProgress = e.data.progress;
+        });
+
+        function init() {
+            DATA.forEach((fact, i) => {
+                if (i % 2 === 0) {
+                    const txtEl = document.createElement('div');
+                    txtEl.className = 'item';
+                    txtEl.innerHTML = `<div class="big-text">${TEXTS[i/2 % TEXTS.length]}</div>`;
+                    items.push({ el: txtEl, type: 'text', baseZ: -(i * CONFIG.zGap) - 800 });
+                    world.appendChild(txtEl);
+                }
+                const cardEl = document.createElement('div');
+                cardEl.className = 'item';
+                cardEl.innerHTML = `<div class="card"><span class="card-id">// MODULE_0${i + 1}</span><h2>${fact.title}</h2><p>${fact.body}</p></div>`;
+                items.push({ el: cardEl, type: 'card', baseZ: -i * CONFIG.zGap });
+                world.appendChild(cardEl);
+            });
+            for (let i = 0; i < CONFIG.starCount; i++) {
+                const s = document.createElement('div');
+                s.className = 'item star';
+                items.push({ el: s, type: 'star', x: (Math.random()-0.5)*4000, y: (Math.random()-0.5)*4000, baseZ: -Math.random()*20000 });
+                world.appendChild(s);
+            }
+        }
+
+        function animate(time) {
+            // CLAMP camera to 8th card
+            const cameraZ = Math.min(parentScrollProgress * max3DScroll, max3DScroll) * CONFIG.camSpeed;
+
+            items.forEach(item => {
+                let vizZ = item.baseZ + cameraZ;
+                let alpha = 1;
+                if (vizZ > 300 && item.type !== 'star' && item.baseZ !== -(DATA.length - 1) * CONFIG.zGap) {
+                    alpha = 1 - (vizZ - 300) / 700;
+                }
+                item.el.style.opacity = Math.max(0, alpha);
+                item.el.style.transform = `translate3d(${item.x || 0}px, ${item.y || 0}px, ${vizZ}px)`;
+            });
+            requestAnimationFrame(animate);
+        }
+        init(); animate();
+    </script>
+</body>
+</html>
