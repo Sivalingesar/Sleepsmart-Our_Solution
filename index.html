@@ -21,7 +21,7 @@
             overflow-x: hidden;
         }
 
-        /* --- HERO SECTION: EXACTLY AS YOUR CODE --- */
+        /* --- HERO SECTION FIX --- */
         .hero-section {
             width: 100%;
             height: 100vh;
@@ -35,18 +35,19 @@
         header#text-container {
             display: block;
             position: relative;
-            width: 90vw; 
-            height: 22vw;
+            width: 100vw; /* Full width ensures absolute center */
+            height: 30vh;
         }
 
         h1, .copy {
             font-family: "Lilita One", cursive;
             text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-            font-size: 14vw; 
+            font-size: 13vw; 
             display: block;
             position: absolute;
             top: 50%;
             left: 50%;
+            /* Centering transform */
             transform: translate(-50%, -50%);
             line-height: 1;
             width: 100%;
@@ -62,10 +63,10 @@
         .copy-3 { color: #4f8ad1; z-index: 20; } 
         .copy-4 { color: #166894c5; z-index: 10; } 
 
-        /* --- STICKY SCROLL TRACK --- */
+        /* --- CONTENT & SCROLL --- */
         .zoom-track {
             position: relative;
-            height: 350vh; /* Length of the 3D scroll */
+            height: 350vh;
             width: 100%;
         }
 
@@ -84,7 +85,6 @@
             width: 100%;
         }
 
-        /* Animated Arrow */
         .scroll-arrow {
             position: absolute;
             bottom: 40px;
@@ -96,8 +96,8 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {bottom: 40px;}
-            40% {bottom: 55px;}
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -15px); }
         }
     </style>
 </head>
@@ -137,9 +137,8 @@
     </div>
 
     <script>
-        /* --- HEADER ANIMATION LOGIC (EXACTLY AS PROVIDED) --- */
         const mouse = { x: 0, y: 0 };
-        const center = { x: 0, y: 0 };
+        const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         const distance = { x: 0, y: 0 };
         const lerped = { x: 0, y: 0 };
         let isSimulating = true;
@@ -149,13 +148,11 @@
         const rotateMult = 2.5; 
         const skewMult = 2.5;
 
-        const container = document.getElementById("text-container");
         const copies = document.querySelectorAll(".copy");
 
-        function getCenter() {
-            const rect = container.getBoundingClientRect();
-            center.x = rect.left + rect.width / 2;
-            center.y = rect.top + rect.height / 2;
+        function updateCenter() {
+            center.x = window.innerWidth / 2;
+            center.y = window.innerHeight / 2;
         }
 
         function onMouseMove(e) {
@@ -183,9 +180,12 @@
                 const z = index * translateZ;
                 const r = index * rotateMult * (lerped.x * 0.001);
                 const s = index * skewMult * (lerped.x * 0.001);
+                
+                // Combine the centering translate(-50%, -50%) WITH the animation logic
                 copy.style.transform = `translate(-50%, -50%) perspective(${perspective}px) translate3d(0px, ${y}px, ${z}px) rotate(${r}deg) skew(${s}deg)`;
             });
 
+            // Ensure main text stays dead center
             document.querySelector('h1').style.transform = `translate(-50%, -50%)`;
             requestAnimationFrame(animateHeader);
         }
@@ -197,8 +197,6 @@
         window.addEventListener('scroll', () => {
             const rect = track.getBoundingClientRect();
             const windowHeight = window.innerHeight;
-            
-            // Calculate progress (0 to 1) while track is passing through viewport
             let progress = -rect.top / (rect.height - windowHeight);
             let clamped = Math.max(0, Math.min(1, progress));
 
@@ -207,9 +205,8 @@
             }
         });
 
-        window.addEventListener("resize", getCenter);
+        window.addEventListener("resize", updateCenter);
         document.addEventListener("mousemove", onMouseMove);
-        getCenter();
         requestAnimationFrame(animateHeader);
     </script>
 </body>
