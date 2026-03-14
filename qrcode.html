@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleepsmart Advanced Electric Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --electric-border-color: #02A2F8;
+            --electric-light-color: oklch(from var(--electric-border-color) l c h);
+            --gradient-color: oklch(from var(--electric-border-color) 0.3 calc(c / 2) h / 0.4);
+            --color-neutral-900: oklch(0.185 0 0);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background-color: transparent; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Outfit", sans-serif;
+            overflow: hidden;
+        }
+
+        .qr-link {
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .svg-container {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+
+        /* Buffer container to prevent clipping of the electric sparks */
+        .scene {
+            position: relative;
+            padding: 60px;
+        }
+
+        .card-container {
+            position: relative;
+            width: 620px;
+            height: 280px;
+            border-radius: 24px;
+            background: linear-gradient(-30deg, var(--gradient-color), transparent, var(--gradient-color)),
+                        linear-gradient(to bottom, var(--color-neutral-900), var(--color-neutral-900));
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.4s ease;
+            z-index: 2;
+        }
+
+        .card-container:hover {
+            transform: translateY(-10px) scale(1.01);
+            background: var(--electric-border-color);
+        }
+
+        /* The Advanced Animated Electric Border */
+        .electric-border-layer {
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--electric-border-color);
+            border-radius: 24px;
+            pointer-events: none;
+            filter: url(#turbulent-displace); 
+            z-index: 5;
+        }
+
+        /* Glow Layers for extra depth */
+        .glow-layer {
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            pointer-events: none;
+        }
+        .glow-1 { border: 2px solid var(--electric-border-color); filter: blur(2px); z-index: 2; opacity: 0.8; }
+        .glow-2 { border: 2px solid var(--electric-light-color); filter: blur(6px); z-index: 3; opacity: 0.5; }
+
+        /* Content Styling */
+        .content-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            padding: 30px 45px;
+            z-index: 10;
+        }
+
+        .qr-section {
+            background-color: #3685fe;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 35px;
+            border-radius: 20px;
+            transition: transform 0.4s ease, background 0.4s ease;
+            flex-shrink: 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-container:hover .qr-section {
+            background-color: white; /* Contrast shift on hover */
+        }
+
+        .qr-section:hover {
+            transition-delay: 1s;
+            transform: scale(1.2);
+        }
+
+        .text-section {
+            padding-left: 45px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .badge-glass {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--electric-light-color);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: inline-block;
+            margin-bottom: 18px;
+            transition: color 0.3s ease, border 0.3s ease;
+        }
+
+        .card-container:hover .badge-glass {
+            color: white;
+            border-color: white;
+        }
+
+        .text-section h3 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .text-section p {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            max-width: 320px;
+            transition: color 0.3s ease;
+        }
+
+        .card-container:hover .text-section p {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .qr-section canvas, .qr-section img {
+            max-width: 130px;
+            display: block;
+        }
+
+        @media (max-width: 680px) {
+            .card-container { width: 340px; height: 520px; }
+            .content-container { flex-direction: column; text-align: center; padding: 40px 20px; }
+            .text-section { padding: 30px 0 0 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <svg class="svg-container">
+        <defs>
+            <filter id="turbulent-displace" colorInterpolationFilters="sRGB" x="-100%" y="-100%" width="300%" height="300%">
+                <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="4" result="noise1" seed="1">
+                    <animate attributeName="seed" from="1" to="100" dur="10s" repeatCount="indefinite" />
+                </feTurbulence>
+                <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
+                    <animate attributeName="dy" values="700; 0" dur="4s" repeatCount="indefinite" />
+                </feOffset>
+
+                <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="4" result="noise2" seed="2">
+                     <animate attributeName="seed" from="100" to="1" dur="10s" repeatCount="indefinite" />
+                </feTurbulence>
+                <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
+                    <animate attributeName="dy" values="0; -700" dur="4s" repeatCount="indefinite" />
+                </feOffset>
+
+                <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="4" result="noise3" seed="3" />
+                <feOffset in="noise3" dx="0" dy="0" result="offsetNoise3">
+                    <animate attributeName="dx" values="1000; 0" dur="5s" repeatCount="indefinite" />
+                </feOffset>
+
+                <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="4" result="noise4" seed="4" />
+                <feOffset in="noise4" dx="0" dy="0" result="offsetNoise4">
+                    <animate attributeName="dx" values="0; -1000" dur="5s" repeatCount="indefinite" />
+                </feOffset>
+
+                <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
+                <feComposite in="offsetNoise3" in2="offsetNoise4" result="part2" />
+                <feBlend in="part1" in2="part2" mode="color-dodge" result="combinedNoise" />
+
+                <feDisplacementMap in="SourceGraphic" in2="combinedNoise" scale="35" xChannelSelector="R" yChannelSelector="B" />
+            </filter>
+        </defs>
+    </svg>
+
+    <div id="app"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script type="text/babel">
+        const { useEffect, useRef } = React;
+
+        const SleepSmartCard = ({ url, title, text }) => {
+            const qrRef = useRef(null);
+            
+            useEffect(() => {
+                const el = qrRef.current;
+                el.innerHTML = ""; 
+                new QRCode(el, {
+                    text: url,
+                    width: 130,
+                    height: 130,
+                    colorDark : "#FFFFFF",
+                    colorLight : "#3685fe",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                el.title = ""; 
+            }, [url]);
+
+            return (
+                <div className="scene">
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="qr-link">
+                        <div className="card-container">
+                            <div className="glow-layer glow-1"></div>
+                            <div className="glow-layer glow-2"></div>
+                            <div className="electric-border-layer"></div>
+
+                            <div className="content-container">
+                                <div className="qr-section" ref={qrRef}></div>
+                                <div className="text-section">
+                                    <div className="badge-glass">Enterprise Prototype</div>
+                                    <h3>{title}</h3>
+                                    <p>{text}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            );
+        }
+
+        const App = () => (
+            <SleepSmartCard 
+                url="https://www.figma.com/proto/Nhnd87eYtYw7L1pfauaauE/Sivalingesar-AT1-Enterprise-2026?node-id=0-1&t=8hXcM4UA0fXsx74H-1"
+                title="SLEEPSMART"
+                text="Scan or click to explore the SLEEPSMART interactive app, and learn about the importance of sleep for high school students."
+            />
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById("app"));
+        root.render(<App />);
+    </script>
+</body>
+</html>
